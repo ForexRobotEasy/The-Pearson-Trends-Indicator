@@ -1,0 +1,129 @@
+mql5
+//+------------------------------------------------------------------+
+//|                                  The Pearson Trends Indicator  |
+//|                                  Developer's Site: forexroboteasy.com  |
+//|                                  Development: Forex Robot Easy Team  |
+//+------------------------------------------------------------------+
+
+// Function to calculate the correlation coefficient between two currency pairs
+double calculateCorrelation(const double&[] prices1, const double&[] prices2)
+{
+    // Calculate the mean of prices1
+    double mean1 = ArraySum(prices1) / ArraySize(prices1);
+
+    // Calculate the mean of prices2
+    double mean2 = ArraySum(prices2) / ArraySize(prices2);
+
+    // Calculate the covariance
+    double covariance = 0;
+    for(int i = 0; i < ArraySize(prices1); i++)
+    {
+        covariance += (prices1[i] - mean1) * (prices2[i] - mean2);
+    }
+    covariance /= ArraySize(prices1);
+
+    // Calculate the standard deviation of prices1
+    double stdDev1 = 0;
+    for(int i = 0; i < ArraySize(prices1); i++)
+    {
+        stdDev1 += MathPow(prices1[i] - mean1, 2);
+    }
+    stdDev1 = MathSqrt(stdDev1 / ArraySize(prices1));
+
+    // Calculate the standard deviation of prices2
+    double stdDev2 = 0;
+    for(int i = 0; i < ArraySize(prices2); i++)
+    {
+        stdDev2 += MathPow(prices2[i] - mean2, 2);
+    }
+    stdDev2 = MathSqrt(stdDev2 / ArraySize(prices2));
+
+    // Calculate the correlation coefficient
+    double correlation = covariance / (stdDev1 * stdDev2);
+
+    return correlation;
+}
+
+// Function to identify market trends based on the calculated correlation coefficient
+bool identifyMarketTrends(const double& correlation)
+{
+    if(correlation > 0.8)
+    {
+        // Strong positive correlation, uptrend
+        return true;
+    }
+    else if(correlation < -0.8)
+    {
+        // Strong negative correlation, downtrend
+        return true;
+    }
+    else
+    {
+        // No significant trend
+        return false;
+    }
+}
+
+// Function to display the strength and direction of the relationship between the two currency pairs
+void displayRelationship(const double& correlation)
+{
+    if(correlation > 0.8)
+    {
+        Print('Strong positive correlation, uptrend');
+    }
+    else if(correlation < -0.8)
+    {
+        Print('Strong negative correlation, downtrend');
+    }
+    else
+    {
+        Print('No significant trend');
+    }
+}
+
+// User-friendly interface to input currency pairs and view trend analysis results
+void OnChartEvent(const int id, const long& lparam, const double& dparam, const string& sparam)
+{
+    if(id == CHARTEVENT_KEYDOWN)
+    {
+        if(sparam == 'C')
+        {
+            // Get user input for currency pairs
+            string currencyPair1 = 'EURUSD';
+            string currencyPair2 = 'GBPUSD';
+
+            // Retrieve historical price data for currency pairs
+
+            // Calculate correlation coefficient
+            double correlation = calculateCorrelation(prices1, prices2);
+
+            // Identify market trends
+            bool isTrend = identifyMarketTrends(correlation);
+
+            // Display relationship between currency pairs
+            displayRelationship(correlation);
+
+            // Generate real-time updates on market trends
+            if(isTrend)
+            {
+                // Send alert to user
+                Alert('Significant market trend detected!');
+            }
+
+            // Track historical correlation data and analyze trends over time
+            // ...
+
+            // Implement risk management features
+            // ...
+
+            // Test the code and provide documentation
+            // ...
+
+            // Integrate code into software architecture
+            // ...
+
+            // Compatibility and deployment considerations
+            // ...
+        }
+    }
+}
